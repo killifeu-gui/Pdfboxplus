@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF CORBA - Manipulation de PDF</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="file"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="file"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .alert.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .file-list {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            background: #f0f0f0;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-item button {
+            width: auto;
+            padding: 5px 10px;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            opacity: 0.8;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📄 PDF CORBA</h1>
+            <p>Manipulez vos PDF facilement et en temps réel</p>
+        </header>
+
+        <div class="grid">
+            <!-- Upload PDF -->
+            <div class="card">
+                <h2>📤 Télécharger un PDF</h2>
+                <div id="uploadAlert"></div>
+                <form id="uploadForm">
+                    <div class="form-group">
+                        <label for="pdfFile">Sélectionner un PDF:</label>
+                        <input type="file" id="pdfFile" accept=".pdf" required>
+                    </div>
+                    <div class="loading" id="uploadLoading">
+                        <div class="spinner"></div>
+                    </div>
+                    <button type="submit" id="uploadBtn">Télécharger</button>
+                </form>
+                <div class="file-list" id="uploadedFiles"></div>
+            </div>
+
+            <!-- Créer un PDF -->
+            <div class="card">
+                <h2>✏️ Créer un PDF</h2>
+                <div id="createAlert"></div>
+                <form id="createForm">
+                    <div class="form-group">
+                        <label for="textInput">Texte:</label>
+                        <input type="text" id="textInput" placeholder="Entrez votre texte" required>
+                    </div>
+                    <div class="loading" id="createLoading">
+                        <div class="spinner"></div>
+                    </div>
+                    <button type="submit" id="createBtn">Créer un PDF</button>
+                </form>
+            </div>
+
+            <!-- Fusionner PDFs -->
+            <div class="card">
+                <h2>🔗 Fusionner les PDFs</h2>
+                <div id="mergeAlert"></div>
+                <form id="mergeForm">
+                    <div class="form-group">
+                        <label>Fichiers à fusionner:</label>
+                        <div id="fileChecklist"></div>
+                    </div>
+                    <div class="loading" id="mergeLoading">
+                        <div class="spinner"></div>
+                    </div>
+                    <button type="submit" id="mergeBtn">Fusionner</button>
+                </form>
+            </div>
+
+            <!-- Diviser un PDF -->
+            <div class="card">
+                <h2>✂️ Diviser un PDF</h2>
+                <div id="splitAlert"></div>
+                <form id="splitForm">
+                    <div class="form-group">
+                        <label for="splitFile">Sélectionner le PDF:</label>
+                        <select id="splitFile" required>
+                            <option value="">-- Choisir un fichier --</option>
+                        </select>
+                    </div>
+                    <div class="loading" id="splitLoading">
+                        <div class="spinner"></div>
+                    </div>
+                    <button type="submit" id="splitBtn">Diviser</button>
+                </form>
+            </div>
+
+            <!-- Extraire des pages -->
+            <div class="card">
+                <h2>📑 Extraire des pages</h2>
+                <div id="extractAlert"></div>
+                <form id="extractForm">
+                    <div class="form-group">
+                        <label for="extractFile">Sélectionner le PDF:</label>
+                        <select id="extractFile" required>
+                            <option value="">-- Choisir un fichier --</option>
+                        </select>
+                    </div>
+                    <div class="two-column">
+                        <div class="form-group">
+                            <label for="startPage">De la page:</label>
+                            <input type="number" id="startPage" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endPage">À la page:</label>
+                            <input type="number" id="endPage" min="1" required>
+                        </div>
+                    </div>
+                    <div class="loading" id="extractLoading">
+                        <div class="spinner"></div>
+                    </div>
+                    <button type="submit" id="extractBtn">Extraire</button>
+                </form>
+            </div>
+
+            <!-- Supprimer des pages -->
+            <div class="card">
+                <h2>🗑️ Supprimer des pages</h2>
+                <div id="deleteAlert"></div>
+                <form id="deleteForm">
+                    <div class="form-group">
+                        <label for="deleteFile">Sélectionner le PDF:</label>
+                        <select id="deleteFile" required>
+                            <option value="">-- Choisir un fichier --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="pageNumbers">Numéros de pages (séparés par des virgules):</label>
+                        <input type="text" id="pageNumbers" placeholder="Ex: 1,3,5" required>
+                    </div>
+                    <div class="loading" id="deleteLoading">
+                        <div class="spinner"></div>
+                    </div>
+                    <button type="submit" id="deleteBtn">Supprimer</button>
+                </form>
+            </div>
+
+            <!-- Ajouter un mot de passe -->
+            <div class="card">
+                <h2>🔐 Protéger avec un mot de passe</h2>
+                <div id="passwordAlert"></div>
+                <form id="passwordForm">
+                    <div class="form-group">
+                        <label for="passwordFile">Sélectionner le PDF:</label>
+                        <select id="passwordFile" required>
+                            <option value="">-- Choisir un fichier --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Mot de passe:</label>
+                        <input type="text" id="password" placeholder="Entrez le mot de passe" required>
+                    </div>
+                    <div class="loading" id="passwordLoading">
+                        <div class="spinner"></div>
+                    </div>
+                    <button type="submit" id="passwordBtn">Protéger</button>
+                </form>
+            </div>
+
+            <!-- Convertir en images -->
+            <div class="card">
+                <h2>🖼️ Convertir en images</h2>
+                <div id="imagesAlert"></div>
+                <form id="imagesForm">
+                    <div class="form-group">
+                        <label for="imagesFile">Sélectionner le PDF:</label>
+                        <select id="imagesFile" required>
+                            <option value="">-- Choisir un fichier --</option>
+                        </select>
+                    </div>
+                    <div class="loading" id="imagesLoading">
+                        <div class="spinner"></div>
+                    </div>
+                    <button type="submit" id="imagesBtn">Convertir</button>
+                </form>
+            </div>
+
+            <!-- Extraire le texte -->
+            <div class="card">
+                <h2>📝 Extraire le texte</h2>
+                <div id="textAlert"></div>
+                <form id="textForm">
+                    <div class="form-group">
+                        <label for="textFile">Sélectionner le PDF:</label>
+                        <select id="textFile" required>
+                            <option value="">-- Choisir un fichier --</option>
+                        </select>
+                    </div>
+                    <div class="loading" id="textLoading">
+                        <div class="spinner"></div>
+                    </div>
+                    <button type="submit" id="textBtn">Extraire le texte</button>
+                </form>
+                <div id="extractedText" style="margin-top: 15px; display: none;">
+                    <p style="color: #667eea; font-weight: 600; margin-bottom: 10px;">Texte extrait:</p>
+                    <textarea readonly style="width: 100%; height: 150px; border: 1px solid #ddd; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 0.9em;" id="textOutput"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>PDF CORBA v1.0 | Manipulation de PDF sécurisée</p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/pdf';
+        let uploadedFiles = [];
+
+        // Initialiser
+        document.addEventListener('DOMContentLoaded', function() {
+            checkHealth();
+            loadUploadedFiles();
+        });
+
+        // Vérifier la santé du service
+        function checkHealth() {
+            fetch(`${API_BASE}/health`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert('uploadAlert', 'Service connecté ✓', 'success');
+                    }
+                })
+                .catch(e => showAlert('uploadAlert', 'Erreur de connexion', 'error'));
+        }
+
+        // Charger les fichiers uploadés
+        function loadUploadedFiles() {
+            const selects = document.querySelectorAll('select[id*="File"]');
+            selects.forEach(select => {
+                select.innerHTML = '<option value="">-- Choisir un fichier --</option>';
+                if (uploadedFiles.length > 0) {
+                    uploadedFiles.forEach(file => {
+                        const option = document.createElement('option');
+                        option.value = file;
+                        option.textContent = file;
+                        select.appendChild(option);
+                    });
+                }
+            });
+        }
+
+        // Afficher une alerte
+        function showAlert(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="alert ${type}">${message}</div>`;
+            setTimeout(() => {
+                element.innerHTML = '';
+            }, 5000);
+        }
+
+        // Upload PDF
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const file = document.getElementById('pdfFile').files[0];
+            if (!file) return;
+
+            document.getElementById('uploadLoading').style.display = 'block';
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch(`${API_BASE}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    uploadedFiles.push(data.data);
+                    loadUploadedFiles();
+                    showAlert('uploadAlert', data.message, 'success');
+                    document.getElementById('uploadForm').reset();
+                } else {
+                    showAlert('uploadAlert', data.message, 'error');
+                }
+            } catch (e) {
+                showAlert('uploadAlert', 'Erreur: ' + e.message, 'error');
+            } finally {
+                document.getElementById('uploadLoading').style.display = 'none';
+            }
+        });
+
+        // Créer un PDF
+        document.getElementById('createForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = document.getElementById('textInput').value;
+
+            document.getElementById('createLoading').style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_BASE}/create?text=${encodeURIComponent(text)}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    uploadedFiles.push(data.data);
+                    loadUploadedFiles();
+                    showAlert('createAlert', data.message, 'success');
+                    document.getElementById('createForm').reset();
+                } else {
+                    showAlert('createAlert', data.message, 'error');
+                }
+            } catch (e) {
+                showAlert('createAlert', 'Erreur: ' + e.message, 'error');
+            } finally {
+                document.getElementById('createLoading').style.display = 'none';
+            }
+        });
+
+        // Fusionner les PDFs
+        document.getElementById('mergeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const files = Array.from(document.querySelectorAll('input[name="mergeFiles"]:checked')).map(cb => cb.value);
+
+            if (files.length < 2) {
+                showAlert('mergeAlert', 'Sélectionnez au moins 2 fichiers', 'error');
+                return;
+            }
+
+            document.getElementById('mergeLoading').style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_BASE}/merge?files=${files.join(',')}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    uploadedFiles.push(data.data);
+                    loadUploadedFiles();
+                    showAlert('mergeAlert', data.message, 'success');
+                } else {
+                    showAlert('mergeAlert', data.message, 'error');
+                }
+            } catch (e) {
+                showAlert('mergeAlert', 'Erreur: ' + e.message, 'error');
+            } finally {
+                document.getElementById('mergeLoading').style.display = 'none';
+            }
+        });
+
+        // Remplir la liste de fusion
+        function updateMergeList() {
+            const container = document.getElementById('fileChecklist');
+            container.innerHTML = uploadedFiles.map(file => `
+                <div style="margin: 5px 0;">
+                    <input type="checkbox" name="mergeFiles" value="${file}" id="merge_${file}">
+                    <label for="merge_${file}" style="margin: 0; font-weight: normal;">${file}</label>
+                </div>
+            `).join('');
+        }
+
+        setInterval(() => {
+            updateMergeList();
+        }, 500);
+
+        // Diviser un PDF
+        document.getElementById('splitForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const file = document.getElementById('splitFile').value;
+
+            if (!file) {
+                showAlert('splitAlert', 'Sélectionnez un fichier', 'error');
+                return;
+            }
+
+            document.getElementById('splitLoading').style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_BASE}/split?file=${file}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    data.data.forEach(f => uploadedFiles.push(f));
+                    loadUploadedFiles();
+                    showAlert('splitAlert', `${data.data.length} fichiers créés`, 'success');
+                } else {
+                    showAlert('splitAlert', data.message, 'error');
+                }
+            } catch (e) {
+                showAlert('splitAlert', 'Erreur: ' + e.message, 'error');
+            } finally {
+                document.getElementById('splitLoading').style.display = 'none';
+            }
+        });
+
+        // Extraire des pages
+        document.getElementById('extractForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const file = document.getElementById('extractFile').value;
+            const startPage = document.getElementById('startPage').value;
+            const endPage = document.getElementById('endPage').value;
+
+            if (!file || !startPage || !endPage) {
+                showAlert('extractAlert', 'Remplissez tous les champs', 'error');
+                return;
+            }
+
+            document.getElementById('extractLoading').style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_BASE}/extract-pages?file=${file}&startPage=${startPage}&endPage=${endPage}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    uploadedFiles.push(data.data);
+                    loadUploadedFiles();
+                    showAlert('extractAlert', data.message, 'success');
+                } else {
+                    showAlert('extractAlert', data.message, 'error');
+                }
+            } catch (e) {
+                showAlert('extractAlert', 'Erreur: ' + e.message, 'error');
+            } finally {
+                document.getElementById('extractLoading').style.display = 'none';
+            }
+        });
+
+        // Supprimer des pages
+        document.getElementById('deleteForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const file = document.getElementById('deleteFile').value;
+            const pageNumbers = document.getElementById('pageNumbers').value.split(',').map(n => n.trim()).filter(n => n);
+
+            if (!file || pageNumbers.length === 0) {
+                showAlert('deleteAlert', 'Remplissez tous les champs', 'error');
+                return;
+            }
+
+            document.getElementById('deleteLoading').style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_BASE}/delete-pages?file=${file}&pageNumbers=${pageNumbers.join(',')}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    uploadedFiles.push(data.data);
+                    loadUploadedFiles();
+                    showAlert('deleteAlert', data.message, 'success');
+                    document.getElementById('deleteForm').reset();
+                } else {
+                    showAlert('deleteAlert', data.message, 'error');
+                }
+            } catch (e) {
+                showAlert('deleteAlert', 'Erreur: ' + e.message, 'error');
+            } finally {
+                document.getElementById('deleteLoading').style.display = 'none';
+            }
+        });
+
+        // Ajouter un mot de passe
+        document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const file = document.getElementById('passwordFile').value;
+            const password = document.getElementById('password').value;
+
+            if (!file || !password) {
+                showAlert('passwordAlert', 'Remplissez tous les champs', 'error');
+                return;
+            }
+
+            document.getElementById('passwordLoading').style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_BASE}/add-password?file=${file}&password=${encodeURIComponent(password)}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    uploadedFiles.push(data.data);
+                    loadUploadedFiles();
+                    showAlert('passwordAlert', data.message, 'success');
+                    document.getElementById('passwordForm').reset();
+                } else {
+                    showAlert('passwordAlert', data.message, 'error');
+                }
+            } catch (e) {
+                showAlert('passwordAlert', 'Erreur: ' + e.message, 'error');
+            } finally {
+                document.getElementById('passwordLoading').style.display = 'none';
+            }
+        });
+
+        // Convertir en images
+        document.getElementById('imagesForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const file = document.getElementById('imagesFile').value;
+
+            if (!file) {
+                showAlert('imagesAlert', 'Sélectionnez un fichier', 'error');
+                return;
+            }
+
+            document.getElementById('imagesLoading').style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_BASE}/to-images?file=${file}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    data.data.forEach(f => uploadedFiles.push(f));
+                    loadUploadedFiles();
+                    showAlert('imagesAlert', `${data.data.length} images créées`, 'success');
+                } else {
+                    showAlert('imagesAlert', data.message, 'error');
+                }
+            } catch (e) {
+                showAlert('imagesAlert', 'Erreur: ' + e.message, 'error');
+            } finally {
+                document.getElementById('imagesLoading').style.display = 'none';
+            }
+        });
+
+        // Extraire le texte
+        document.getElementById('textForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const file = document.getElementById('textFile').value;
+
+            if (!file) {
+                showAlert('textAlert', 'Sélectionnez un fichier', 'error');
+                return;
+            }
+
+            document.getElementById('textLoading').style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_BASE}/extract-text?file=${file}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('textOutput').value = data.data;
+                    document.getElementById('extractedText').style.display = 'block';
+                    showAlert('textAlert', 'Texte extrait avec succès', 'success');
+                } else {
+                    showAlert('textAlert', data.message, 'error');
+                }
+            } catch (e) {
+                showAlert('textAlert', 'Erreur: ' + e.message, 'error');
+            } finally {
+                document.getElementById('textLoading').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
