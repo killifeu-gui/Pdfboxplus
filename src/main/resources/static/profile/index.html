@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil - PDF CORBA</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div id="sidebarContainer"></div>
+    
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Navbar -->
+        <div id="navbarContainer"></div>
+        
+        <!-- Profile Content -->
+        <div class="dashboard-content">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Mon Profil</h1>
+                <p class="dashboard-subtitle">Gérez vos informations personnelles</p>
+            </div>
+            
+            <div style="max-width: 800px;">
+                <!-- Profile Card -->
+                <div class="recent-files-section" style="margin-bottom: 24px;">
+                    <div class="section-header">
+                        <h2 class="section-title">Informations personnelles</h2>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 24px; margin-bottom: 32px;">
+                        <div class="user-avatar" style="width: 100px; height: 100px; font-size: 2rem;" id="profileAvatar">JD</div>
+                        <div>
+                            <button class="auth-button" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">
+                                Changer l'avatar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label for="profileName">Nom complet</label>
+                            <input type="text" id="profileName" name="name" placeholder="John Doe" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="profileEmail">Email</label>
+                            <input type="email" id="profileEmail" name="email" placeholder="john@example.com" readonly style="background: var(--gray); cursor: not-allowed;">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="profileInitials">Initiales</label>
+                            <input type="text" id="profileInitials" name="initials" placeholder="JD" readonly style="background: var(--gray); cursor: not-allowed;">
+                        </div>
+                        
+                        <button type="submit" class="auth-button" id="saveProfileBtn">
+                            <span>Enregistrer les modifications</span>
+                            <div class="loading-spinner"></div>
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Account Statistics -->
+                <div class="recent-files-section" style="margin-bottom: 24px;">
+                    <div class="section-header">
+                        <h2 class="section-title">Statistiques du compte</h2>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-card-header">
+                                <div class="stat-card-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <polyline points="14 2 14 8 20 8" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="stat-card-value" id="profileTotalFiles">0</div>
+                            <div class="stat-card-label">Fichiers traités</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-card-header">
+                                <div class="stat-card-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <line x1="16" y1="2" x2="16" y2="6" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <line x1="8" y1="2" x2="8" y2="6" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <line x1="3" y1="10" x2="21" y2="10" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="stat-card-value" id="profileMemberSince">-</div>
+                            <div class="stat-card-label">Membre depuis</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-card-header">
+                                <div class="stat-card-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="12" cy="12" r="10" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <polyline points="12 6 12 12 16 14" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="stat-card-value" id="profileLastLogin">-</div>
+                            <div class="stat-card-label">Dernière connexion</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Security -->
+                <div class="recent-files-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Sécurité</h2>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <button class="auth-button" style="width: auto;" onclick="showChangePasswordModal()">
+                            Changer le mot de passe
+                        </button>
+                        
+                        <button class="auth-button" style="width: auto; background: linear-gradient(135deg, #f44336 0%, #e57373 100%);" onclick="confirmDeleteAccount()">
+                            Supprimer mon compte
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+        <div class="glass-card" style="max-width: 450px; width: 90%;">
+            <div class="auth-header">
+                <h1>Changer le mot de passe</h1>
+            </div>
+            
+            <form id="changePasswordForm">
+                <div class="form-group">
+                    <label for="currentPassword">Mot de passe actuel</label>
+                    <input type="password" id="currentPassword" name="currentPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="newPassword">Nouveau mot de passe</label>
+                    <input type="password" id="newPassword" name="newPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmNewPassword">Confirmer le nouveau mot de passe</label>
+                    <input type="password" id="confirmNewPassword" name="confirmNewPassword" required>
+                </div>
+                
+                <div style="display: flex; gap: 12px;">
+                    <button type="button" class="auth-button" style="background: var(--gray); color: var(--dark);" onclick="hideChangePasswordModal()">
+                        Annuler
+                    </button>
+                    <button type="submit" class="auth-button">
+                        Changer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="/js/dashboard.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProfileData();
+            initializeProfileForm();
+        });
+        
+        function loadProfileData() {
+            const userName = localStorage.getItem('userName');
+            const userEmail = localStorage.getItem('userEmail');
+            const userInitials = localStorage.getItem('userInitials');
+            
+            if (userName) {
+                document.getElementById('profileName').value = userName;
+                document.getElementById('profileAvatar').textContent = userInitials || userName.substring(0, 2).toUpperCase();
+            }
+            
+            if (userEmail) {
+                document.getElementById('profileEmail').value = userEmail;
+            }
+            
+            if (userInitials) {
+                document.getElementById('profileInitials').value = userInitials;
+            }
+            
+            // Load statistics (simulated)
+            document.getElementById('profileTotalFiles').textContent = Math.floor(Math.random() * 50) + 10;
+            document.getElementById('profileMemberSince').textContent = '2024';
+            document.getElementById('profileLastLogin').textContent = "Aujourd'hui";
+        }
+        
+        function initializeProfileForm() {
+            document.getElementById('profileForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const name = document.getElementById('profileName').value;
+                const saveBtn = document.getElementById('saveProfileBtn');
+                
+                saveBtn.classList.add('loading');
+                saveBtn.disabled = true;
+                
+                try {
+                    // Simulated API call
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    localStorage.setItem('userName', name);
+                    
+                    showNotification('Profil mis à jour avec succès', 'success');
+                    
+                    // Update displayed name
+                    const welcomeName = document.getElementById('welcomeUserName');
+                    if (welcomeName) welcomeName.textContent = name;
+                } catch (error) {
+                    showNotification('Erreur lors de la mise à jour du profil', 'error');
+                } finally {
+                    saveBtn.classList.remove('loading');
+                    saveBtn.disabled = false;
+                }
+            });
+            
+            document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+                
+                if (newPassword !== confirmNewPassword) {
+                    showNotification('Les mots de passe ne correspondent pas', 'error');
+                    return;
+                }
+                
+                if (newPassword.length < 6) {
+                    showNotification('Le mot de passe doit contenir au moins 6 caractères', 'error');
+                    return;
+                }
+                
+                try {
+                    // Simulated API call
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    showNotification('Mot de passe changé avec succès', 'success');
+                    hideChangePasswordModal();
+                    document.getElementById('changePasswordForm').reset();
+                } catch (error) {
+                    showNotification('Erreur lors du changement de mot de passe', 'error');
+                }
+            });
+        }
+        
+        function showChangePasswordModal() {
+            document.getElementById('changePasswordModal').style.display = 'flex';
+        }
+        
+        function hideChangePasswordModal() {
+            document.getElementById('changePasswordModal').style.display = 'none';
+        }
+        
+        function confirmDeleteAccount() {
+            if (confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) {
+                if (confirm('Cette action supprimera toutes vos données. Confirmer la suppression ?')) {
+                    // Delete account logic
+                    localStorage.clear();
+                    window.location.href = '/auth/login.html';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

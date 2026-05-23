@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - PDF CORBA</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div id="sidebarContainer"></div>
+    
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Navbar -->
+        <div id="navbarContainer"></div>
+        
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Bienvenue, <span id="welcomeUserName">Utilisateur</span></h1>
+                <p class="dashboard-subtitle">Gérez tous vos fichiers PDF depuis un seul endroit</p>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-card-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <polyline points="14 2 14 8 20 8" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-card-value" id="totalFiles">0</div>
+                    <div class="stat-card-label">Fichiers traités</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-card-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <polyline points="17 8 12 3 7 8" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <line x1="12" y1="3" x2="12" y2="15" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-card-value" id="uploadedFiles">0</div>
+                    <div class="stat-card-label">Fichiers uploadés</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-card-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-card-value" id="mergedFiles">0</div>
+                    <div class="stat-card-label">Fusions effectuées</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-card-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="6" cy="6" r="3" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="6" cy="18" r="3" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <line x1="20" y1="4" x2="8.12" y2="15.88" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <line x1="14.47" y1="14.48" x2="20" y2="20" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <line x1="8.12" y1="8.12" x2="12" y2="12" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-card-value" id="splitFiles">0</div>
+                    <div class="stat-card-label">Divisions effectuées</div>
+                </div>
+            </div>
+            
+            <!-- PDF Functions -->
+            <h2 class="section-title" style="margin-bottom: 24px;">Fonctions PDF</h2>
+            <div class="pdf-functions-grid">
+                <div class="pdf-function-card" onclick="window.location.href='/dashboard/upload.html'">
+                    <div class="pdf-function-card-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <polyline points="17 8 12 3 7 8" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="12" y1="3" x2="12" y2="15" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="pdf-function-card-title">Upload PDF</h3>
+                    <p class="pdf-function-card-description">Téléchargez vos fichiers PDF pour les traiter</p>
+                </div>
+                
+                <div class="pdf-function-card" onclick="window.location.href='/dashboard/merge.html'">
+                    <div class="pdf-function-card-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="pdf-function-card-title">Fusionner</h3>
+                    <p class="pdf-function-card-description">Combinez plusieurs PDF en un seul document</p>
+                </div>
+                
+                <div class="pdf-function-card" onclick="window.location.href='/dashboard/split.html'">
+                    <div class="pdf-function-card-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="6" cy="6" r="3" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="6" cy="18" r="3" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="20" y1="4" x2="8.12" y2="15.88" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="14.47" y1="14.48" x2="20" y2="20" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="8.12" y1="8.12" x2="12" y2="12" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="pdf-function-card-title">Diviser</h3>
+                    <p class="pdf-function-card-description">Séparez un PDF en pages individuelles</p>
+                </div>
+                
+                <div class="pdf-function-card" onclick="window.location.href='/dashboard/extract.html'">
+                    <div class="pdf-function-card-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <polyline points="14 2 14 8 20 8" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="16" y1="13" x2="8" y2="13" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="16" y1="17" x2="8" y2="17" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <polyline points="10 9 9 9 8 9" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="pdf-function-card-title">Extraire pages</h3>
+                    <p class="pdf-function-card-description">Sélectionnez et extrayez des pages spécifiques</p>
+                </div>
+                
+                <div class="pdf-function-card" onclick="window.location.href='/dashboard/convert.html'">
+                    <div class="pdf-function-card-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="8.5" cy="8.5" r="1.5" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <polyline points="21 15 16 10 5 21" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="pdf-function-card-title">Convertir en images</h3>
+                    <p class="pdf-function-card-description">Transformez vos PDF en images PNG</p>
+                </div>
+                
+                <div class="pdf-function-card" onclick="window.location.href='/dashboard/protect.html'">
+                    <div class="pdf-function-card-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="pdf-function-card-title">Protéger</h3>
+                    <p class="pdf-function-card-description">Ajoutez un mot de passe à vos PDF</p>
+                </div>
+                
+                <div class="pdf-function-card" onclick="window.location.href='/dashboard/text.html'">
+                    <div class="pdf-function-card-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <polyline points="14 2 14 8 20 8" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="16" y1="13" x2="8" y2="13" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="16" y1="17" x2="8" y2="17" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <polyline points="10 9 9 9 8 9" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="pdf-function-card-title">Extraire texte</h3>
+                    <p class="pdf-function-card-description">Récupérez le texte de vos PDF</p>
+                </div>
+                
+                <div class="pdf-function-card" onclick="window.location.href='/dashboard/delete.html'">
+                    <div class="pdf-function-card-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <polyline points="3 6 5 6 21 6" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="10" y1="11" x2="10" y2="17" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="14" y1="11" x2="14" y2="17" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="pdf-function-card-title">Supprimer pages</h3>
+                    <p class="pdf-function-card-description">Retirez des pages indésirables</p>
+                </div>
+            </div>
+            
+            <!-- Recent Files -->
+            <div class="recent-files-section">
+                <div class="section-header">
+                    <h2 class="section-title">Fichiers récents</h2>
+                    <a href="#" class="section-action">Voir tout →</a>
+                </div>
+                <div class="file-list" id="recentFilesList">
+                    <div class="file-item">
+                        <div class="file-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <polyline points="14 2 14 8 20 8" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="file-info">
+                            <div class="file-name">document.pdf</div>
+                            <div class="file-meta">Uploadé il y a 2 heures</div>
+                        </div>
+                        <div class="file-actions">
+                            <button class="file-action-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <polyline points="7 10 12 15 17 10" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <button class="file-action-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <polyline points="3 6 5 6 21 6" stroke="#f44336" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="#f44336" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="file-item">
+                        <div class="file-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <polyline points="14 2 14 8 20 8" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="file-info">
+                            <div class="file-name">rapport_merged.pdf</div>
+                            <div class="file-meta">Fusionné il y a 5 heures</div>
+                        </div>
+                        <div class="file-actions">
+                            <button class="file-action-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <polyline points="7 10 12 15 17 10" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <button class="file-action-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <polyline points="3 6 5 6 21 6" stroke="#f44336" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="#f44336" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="file-item">
+                        <div class="file-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <polyline points="14 2 14 8 20 8" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="file-info">
+                            <div class="file-name">presentation_split.pdf</div>
+                            <div class="file-meta">Divisé il y a 1 jour</div>
+                        </div>
+                        <div class="file-actions">
+                            <button class="file-action-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <polyline points="7 10 12 15 17 10" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <button class="file-action-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <polyline points="3 6 5 6 21 6" stroke="#f44336" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="#f44336" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>

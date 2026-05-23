@@ -1,0 +1,18 @@
+qservices:
+  - type: web
+    name: pdf-corba-app
+    env: node
+    buildCommand: mvn clean package -DskipTests
+    startCommand: java -Xmx512m -Xms256m -jar target/pdf-corba-app-1.0.0.jar
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: PORT
+        value: 8080
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION
+        value: 86400000
+      - key: JAVA_OPTS
+        value: -Xmx512m -Xms256m
+    plan: free

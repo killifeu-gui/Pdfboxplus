@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - PDF CORBA</title>
+    <link rel="stylesheet" href="/css/auth.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="glass-card">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#667eea"/>
+                        <path d="M2 17L12 22L22 17" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 7V17" stroke="#667eea" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M22 7V17" stroke="#667eea" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M12 12V22" stroke="#667eea" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <h1>Créer un compte</h1>
+                <p>Rejoignez PDF CORBA pour manipuler vos PDF</p>
+            </div>
+            
+            <div id="alertContainer"></div>
+            
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="name">Nom complet</label>
+                    <input type="text" id="name" name="name" placeholder="John Doe" required autocomplete="name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="votre@email.com" required autocomplete="email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" name="password" placeholder="Min. 6 caractères" required autocomplete="new-password">
+                    <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 12s4-8 11-8 11 11 8 11 8-4-8-11-8z" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12" cy="12" r="3" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirmer le mot de passe</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="••••••••" required autocomplete="new-password">
+                    <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 12s4-8 11-8 11 11 8 11 8-4-8-11-8z" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12" cy="12" r="3" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <button type="submit" class="auth-button" id="registerBtn">
+                    <span>S'inscrire</span>
+                    <div class="loading-spinner"></div>
+                </button>
+            </form>
+            
+            <div class="auth-links">
+                <p>Vous avez déjà un compte ? <a href="/auth/login.html">Se connecter</a></p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = '/api/auth';
+        
+        function togglePassword(fieldId) {
+            const passwordInput = document.getElementById(fieldId);
+            const toggleBtn = passwordInput.nextElementSibling;
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a10.07 10.07 0 0 1 5.94-5.94m1.06 1.06A10.07 10.07 0 0 0 12 4c7 0 11 8 11 8a10.07 10.07 0 0 0-5.94-5.94m-4.24 4.24a3 3 0 0 1-4.24-4.24 3 3 0 0 1 4.24 4.24m0 0L3 3" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                `;
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 12s4-8 11-8 11 11 8 11 8-4-8-11-8z" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="12" cy="12" r="3" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                `;
+            }
+        }
+        
+        function showAlert(message, type) {
+            const container = document.getElementById('alertContainer');
+            container.innerHTML = `<div class="alert ${type}">${message}</div>`;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+        
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const registerBtn = document.getElementById('registerBtn');
+            
+            if (password !== confirmPassword) {
+                showAlert('Les mots de passe ne correspondent pas', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showAlert('Le mot de passe doit contenir au moins 6 caractères', 'error');
+                return;
+            }
+            
+            registerBtn.classList.add('loading');
+            registerBtn.disabled = true;
+            
+            try {
+                const response = await fetch(`${API_BASE}/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showAlert('Compte créé avec succès ! Redirection...', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = '/auth/login.html';
+                    }, 1500);
+                } else {
+                    showAlert(data.message || 'Erreur lors de l\'inscription', 'error');
+                }
+            } catch (error) {
+                showAlert('Erreur de connexion au serveur', 'error');
+            } finally {
+                registerBtn.classList.remove('loading');
+                registerBtn.disabled = false;
+            }
+        });
+        
+        // Check if already logged in
+        window.addEventListener('load', () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                window.location.href = '/dashboard/index.html';
+            }
+        });
+    </script>
+</body>
+</html>
