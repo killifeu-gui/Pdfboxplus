@@ -173,7 +173,7 @@ public class PdfController {
                 return ResponseEntity.badRequest().body(new ResponseDto(false, "Format invalide (PDF requis)", null));
             }
 
-            if (!pdfService.validateFileSize(file.getSize())) {
+            if (file.getSize() > 50 * 1024 * 1024) {
                 return ResponseEntity.badRequest().body(new ResponseDto(false, "Fichier trop volumineux (max 50MB)", null));
             }
 

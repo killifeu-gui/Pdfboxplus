@@ -59,7 +59,9 @@ public class PdfService {
                     throw new IOException("Fichier introuvable: " + inputPath);
                 }
                 PDDocument doc = PDDocument.load(file);
-                mergedDoc.addPages(doc.getPages());
+                for (PDPage page : doc.getPages()) {
+                    mergedDoc.addPage(page);
+                }
                 doc.close();
             }
 
